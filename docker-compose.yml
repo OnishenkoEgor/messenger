@@ -48,7 +48,6 @@ services:
     tty: true
     environment:
       - APP_URL=localhost:9000
-      - KAFKA_BROKERS=kafka:9092
     volumes:
       - ./app:/var/www
       - ./entrypoints/queue-entrypoint.sh:/var/tmp/queue-entrypoint.sh:ro

@@ -1,0 +1,99 @@
+version: '3.7'
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./app:/var/www
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    ports:
+      - "8080:80"
+      - "443:443"
+      - "5173:5173"
+    container_name: nginx
+    networks:
+      - app-network
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+      - APP_URL=localhost:9000
+    volumes:
+      - ./app:/var/www
+      - ./entrypoints/entrypoint.sh:/var/tmp/entrypoint.sh:ro
+      - ./log:/var/log/nginx
+    depends_on:
+      - db
+    entrypoint: /var/tmp/entrypoint.sh
+    container_name: app
+    healthcheck:
+      test: curl --fail nginx || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+    expose:
+      - 9000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
+  app-queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+      - APP_URL=localhost:9000
+      - KAFKA_BROKERS=kafka:9092
+    volumes:
+      - ./app:/var/www
+      - ./entrypoints/queue-entrypoint.sh:/var/tmp/queue-entrypoint.sh:ro
+      - ./log:/var/log/nginx
+    depends_on:
+      app:
+        condition: service_healthy
+        restart: true
+    entrypoint: /var/tmp/queue-entrypoint.sh
+    container_name: app-queue
+    networks:
+      - app-network
+  app-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+      - APP_URL=localhost:9000
+    volumes:
+      - ./app:/var/www
+      - ./entrypoints/scheduler-entrypoint.sh:/var/tmp/scheduler-entrypoint.sh:ro
+      - ./log:/var/log/nginx
+    depends_on:
+      app:
+        condition: service_healthy
+        restart: true
+    entrypoint: /var/tmp/scheduler-entrypoint.sh
+    container_name: app-scheduler
+    networks:
+      - app-network
+  db:
+    image: postgres:15.3
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: app
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    container_name: db
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge

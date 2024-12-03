@@ -3,7 +3,7 @@ services:
     nginx:
         image: nginx:latest
         volumes:
-            - ./app:/var/www
+            - ./backend:/var/www
             - ./nginx:/etc/nginx/conf.d
         depends_on:
             - app
@@ -22,13 +22,13 @@ services:
         environment:
             - APP_URL=localhost:9000
         volumes:
-            - ./app:/var/www
+            - ./backend:/var/www
             - ./entrypoints/entrypoint.sh:/var/tmp/entrypoint.sh:ro
             - ./log:/var/log/nginx
         depends_on:
             - db
         entrypoint: /var/tmp/entrypoint.sh
-        container_name: app
+        container_name: backend
         healthcheck:
             test: curl --fail nginx || exit 1
             interval: 1m30s
@@ -41,51 +41,13 @@ services:
             - "host.docker.internal:host-gateway"
         networks:
             - app-network
-#    app-queue:
-#        build:
-#            context: .
-#            dockerfile: Dockerfile
-#        tty: true
-#        environment:
-#            - APP_URL=localhost:9000
-#        volumes:
-#            - ./app:/var/www
-#            - ./entrypoints/queue-entrypoint.sh:/var/tmp/queue-entrypoint.sh:ro
-#            - ./log:/var/log/nginx
-#        depends_on:
-#            app:
-#                condition: service_healthy
-#                restart: true
-#        entrypoint: /var/tmp/queue-entrypoint.sh
-#        container_name: app-queue
-#        networks:
-#            - app-network
-#    app-scheduler:
-#        build:
-#            context: .
-#            dockerfile: Dockerfile
-#        tty: true
-#        environment:
-#            - APP_URL=localhost:9000
-#        volumes:
-#            - ./app:/var/www
-#            - ./entrypoints/scheduler-entrypoint.sh:/var/tmp/scheduler-entrypoint.sh:ro
-#            - ./log:/var/log/nginx
-#        depends_on:
-#            app:
-#                condition: service_healthy
-#                restart: true
-#        entrypoint: /var/tmp/scheduler-entrypoint.sh
-#        container_name: app-scheduler
-#        networks:
-#            - app-network
     db:
         image: postgres:15.3
         restart: always
         environment:
             POSTGRES_PASSWORD: admin
             POSTGRES_USER: admin
-            POSTGRES_DB: app
+            POSTGRES_DB: backend
         expose:
             - 5432
         ports:
@@ -95,13 +57,13 @@ services:
             - app-network
     front:
         build:
-            context: front
+            context: frontend
             dockerfile: ../node.Dockerfile
         expose:
             - 3000
         ports:
             - "3000:3000"
-        container_name: front
+        container_name: frontend
         networks:
             - app-network
 networks:

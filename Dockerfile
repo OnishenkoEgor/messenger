@@ -24,11 +24,9 @@ RUN pecl install rdkafka && \
 RUN pecl install xdebug && \
     docker-php-ext-enable xdebug
 
-COPY ./app /var/www
+COPY ./backend /var/www
 COPY ./php/php.ini /usr/local/etc/php/conf.d/php.ini
 COPY ./php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-COPY ./entrypoints/queue-entrypoint.sh /var/tmp/queue-entrypoint.sh
-COPY ./entrypoints/scheduler-entrypoint.sh /var/tmp/scheduler-entrypoint.sh
 COPY ./entrypoints/entrypoint.sh /var/tmp/entrypoint.sh
 
 WORKDIR /var/www

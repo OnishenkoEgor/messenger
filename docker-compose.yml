@@ -45,14 +45,21 @@ services:
         image: postgres:15.3
         restart: always
         environment:
+            POSTGRES_DB: backend
             POSTGRES_PASSWORD: admin
             POSTGRES_USER: admin
-            POSTGRES_DB: backend
         expose:
             - 5432
         ports:
             - "5432:5432"
         container_name: db
+        healthcheck:
+            test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}" ]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        volumes:
+            - database_data:/var/lib/postgresql/data:rw
         networks:
             - app-network
     front:

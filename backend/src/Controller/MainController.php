@@ -7,7 +7,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MainController
 {
-    #[Route('/auth')]
+    #[Route('/')]
     public function test(): JsonResponse
     {
         return new JsonResponse(json_encode(['res' => 'test'], true), 200);

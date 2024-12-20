@@ -82,11 +82,17 @@ services:
         build:
             context: frontend
             dockerfile: ../node.Dockerfile
+        restart: no
+        volumes:
+            - ./frontend:/var/www
         expose:
             - 3000
         ports:
             - "3000:3000"
         container_name: frontend
+        command: "npm run dev"
+        environment:
+            NEXT_PUBLIC_BACKEND_URL: 'http://localhost:8282'
         networks:
             - app-network
 networks:

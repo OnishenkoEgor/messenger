@@ -1,8 +1,11 @@
 'use server'
-export default async function Home() {
-  return (
-    <main className="">
+import {ReactElement} from "react";
 
-    </main>
-  );
+export default async function Home():Promise<ReactElement> {
+
+    return (
+        <main className="">
+            {'main'}
+        </main>
+    );
 }

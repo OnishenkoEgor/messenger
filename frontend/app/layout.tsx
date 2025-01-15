@@ -2,6 +2,7 @@ import type {Metadata} from "next";
 import {Inter} from "next/font/google";
 import "./globals.css";
 import {Providers} from "@/app/providers";
+import {Header} from "@/components/header/Header";
 
 const inter = Inter({subsets: ["cyrillic"]});
 
@@ -15,7 +16,8 @@ export default function RootLayout({children}: { children: React.ReactNode; }) {
         <html lang="ru">
         <body className={inter.className}>
         <Providers>
-            <div className="h-dvh">
+            <div className="h-dvh divide-y grid" style={{gridTemplateRows: 'max-content 1fr'}}>
+                <Header/>
                 {children}
             </div>
         </Providers>

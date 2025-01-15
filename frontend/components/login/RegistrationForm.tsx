@@ -1,12 +1,16 @@
 'use client'
-import {FormEvent, ReactElement} from "react";
+import {FormEvent, ReactElement, useState} from "react";
 import {Form} from "@nextui-org/form";
 import {Input} from "@nextui-org/input";
 import {Button} from "@nextui-org/button";
-import {register} from "@/utils/auth/auth";
-import {AuthRegisterType} from "@/utils/auth/type";
+import {register} from "@/utils/api/auth/auth";
+import {AuthRegisterType} from "@/utils/api/auth/type";
+import {Alert} from "@nextui-org/alert";
 
 export function RegistrationForm(): ReactElement {
+    const [message, setMessage] = useState('');
+    const [type, setType] = useState('');
+
     const submit = (e: FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -16,10 +20,21 @@ export function RegistrationForm(): ReactElement {
             inviteKey: formData.get('invite_key')?.toString() ?? ''
         }
 
-        register(data).then(res => {
-            console.log(res);
+        register(data).then(({message, status}) => {
+            showMessage(message, status === 200 ? 'success' : 'danger');
         });
     }
+
+    const showMessage = (message: string, type: 'danger' | 'success') => {
+        setType(type);
+        setMessage(message);
+
+        setTimeout(() => {
+            setType('');
+            setMessage('');
+        }, 2500)
+    }
+
     return (
         <Form className={'w-full grid grid-cols-1 gap-4 pt-4'} onSubmit={submit}>
             <Input
@@ -60,6 +75,7 @@ export function RegistrationForm(): ReactElement {
                     type="submit"
                     radius={'none'}
             >Отправить</Button>
+            <Alert title={message} color={type} isVisible={message && type} description={''}/>
         </Form>
     );
 }

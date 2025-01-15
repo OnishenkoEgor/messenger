@@ -1,10 +1,8 @@
 import {NextRequest, NextResponse} from "next/server"
-import {authenticate} from "@/utils/auth/auth";
 
-export  function middleware(request: NextRequest) {
-    const authenticated = authenticate(request);
-
-    if (authenticated) {
+export function middleware(request: NextRequest) {
+    const authorized = false;
+    if (authorized) {
         return NextResponse.next();
     }
 
@@ -12,5 +10,5 @@ export  function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/((?!login|_next|favicon).*)"],
+    matcher: ["/((?!login|_next|favicon|logo).*)"],
 }

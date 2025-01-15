@@ -24,6 +24,7 @@ services:
             - ./backend:/var/www
             - ./entrypoints/entrypoint.sh:/var/tmp/entrypoint.sh:ro
             - ./log:/var/log/nginx
+            - ./php/php.ini:/usr/local/etc/php/php.ini
         depends_on:
             - db
         entrypoint: /var/tmp/entrypoint.sh

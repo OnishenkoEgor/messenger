@@ -1,12 +1,41 @@
 'use client'
-import {ReactElement} from "react";
+import {FormEvent, ReactElement, useState} from "react";
 import {Form} from "@nextui-org/form";
 import {Input} from "@nextui-org/input";
 import {Button} from "@nextui-org/button";
+import {Alert} from "@nextui-org/alert";
+import {AuthLoginType} from "@/utils/api/auth/type";
+import {login} from "@/utils/api/auth/auth";
 
 export function LoginForm(): ReactElement {
+    const [message, setMessage] = useState('');
+    const [type, setType] = useState('');
+
+    const submit = (e: FormEvent) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget as HTMLFormElement);
+        const data: AuthLoginType = {
+            email: formData.get('email')?.toString() ?? '',
+            password: formData.get('password')?.toString() ?? '',
+        }
+
+        login(data).then(({token}) => {
+            showMessage('Login success', 'success');
+
+        });
+    }
+
+    const showMessage = (message: string, type: 'danger' | 'success') => {
+        setType(type);
+        setMessage(message);
+
+        setTimeout(() => {
+            setType('');
+            setMessage('');
+        }, 2500)
+    }
     return (
-        <Form className={'w-full grid grid-cols-1 gap-4 pt-4'}>
+        <Form className={'w-full grid grid-cols-1 gap-4 pt-4'} onSubmit={submit}>
             <Input
                 isRequired
                 label="Почта"
@@ -16,6 +45,7 @@ export function LoginForm(): ReactElement {
                 type="text"
                 radius={'none'}
                 size={'lg'}
+                value={'test@test.test'}
             />
             <Input
                 isRequired
@@ -26,6 +56,7 @@ export function LoginForm(): ReactElement {
                 type="text"
                 radius={'none'}
                 size={'lg'}
+                value={'test'}
             />
             <Button className={'mt-3'}
                     color={'default'}
@@ -34,6 +65,8 @@ export function LoginForm(): ReactElement {
                     type="submit"
                     radius={'none'}
             >Отправить</Button>
+            <Alert title={message} color={type} isVisible={message && type} description={''}/>
         </Form>
+
     );
 }

@@ -10,7 +10,7 @@ export default function (): ReactElement {
     const [selected, setSelected] = useState('login');
 
     return (
-        <div className={'flex flex-col justify-start items-center h-full pt-6'}>
+        <div className={'flex flex-col justify-start items-center pt-6'}>
             <Card radius={'none'}
                   isBlurred
                   className={'w-96'}>

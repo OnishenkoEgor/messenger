@@ -4,5 +4,5 @@ export interface AuthLoginType {
 }
 
 export interface AuthRegisterType extends AuthLoginType {
-    inviteKey: string
+    name: string
 }

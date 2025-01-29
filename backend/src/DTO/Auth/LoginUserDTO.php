@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Dto\Request\User;
+namespace App\DTO\Auth;
 
-readonly class UserRegisterDto
+readonly class LoginUserDTO
 {
     public function __construct(
         public string $email,

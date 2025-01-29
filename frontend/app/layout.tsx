@@ -3,6 +3,8 @@ import {Inter} from "next/font/google";
 import "./globals.css";
 import {Providers} from "@/app/providers";
 import {Header} from "@/components/header/Header";
+import {usePathname} from "next/navigation";
+import {useEffect, useState} from "react";
 
 const inter = Inter({subsets: ["cyrillic"]});
 
@@ -12,6 +14,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}: { children: React.ReactNode; }) {
+    const pathname = usePathname();
+    const [isLogin, setIsLogin] = useState(pathname === 'login');
+    useEffect(() => {
+        setIsLogin(pathname === 'login');
+    }, [pathname]);
+
     return (
         <html lang="ru">
         <body className={inter.className}>

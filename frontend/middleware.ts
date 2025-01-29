@@ -1,8 +1,8 @@
 import {NextRequest, NextResponse} from "next/server"
 
-export function middleware(request: NextRequest) {
-    const authorized = false;
-    if (authorized) {
+export async function middleware(request: NextRequest) {
+    const token = request.cookies.get('auth_token');
+    if (token) {
         return NextResponse.next();
     }
 

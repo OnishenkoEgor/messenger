@@ -1,8 +1,6 @@
-'use server'
 import {ReactElement} from "react";
-import {Link} from "@nextui-org/react";
 
-export default async function Home(): Promise<ReactElement> {
+export default async function (): Promise<ReactElement> {
     return (
         <main>
 

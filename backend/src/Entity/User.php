@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -55,6 +56,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column(type: Types::TEXT)]
     private string $password;
+
+    #[ORM\ManyToMany(targetEntity: Chat::class, mappedBy: 'members')]
+    private ?Collection $chats = null;
 
     public function getId(): ?int
     {
@@ -152,6 +156,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getChats(): ?Collection
+    {
+        return $this->chats;
+    }
+
+    /**
+     * @param Collection|null $chats
+     */
+    public function setChats(?Collection $chats): void
+    {
+        $this->chats = $chats;
     }
 
     /**

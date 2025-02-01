@@ -3,6 +3,7 @@
 namespace App\EventListeners\Auth;
 
 use App\Entity\User;
+use App\Transformer\User\UserInfoDTOFromEntityTransformer;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
@@ -26,12 +27,7 @@ readonly class AuthenticationSuccessListener
             return;
         }
 
-        $data['data']['user'] = [
-            'email' => $user->getEmail(),
-            'name' => $user->getName(),
-            'image' => $user->getImage(),
-            'roles' => $user->getRoles()
-        ];
+        $data['data']['user'] = UserInfoDTOFromEntityTransformer::transform($user)->toArray();
 
         $tokenData = $this->JWTManager->parse($data['token']);
         if (!$tokenData['exp'] ?? false) {

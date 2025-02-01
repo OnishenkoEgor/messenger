@@ -4,8 +4,8 @@ import {Form} from "@nextui-org/form";
 import {Input} from "@nextui-org/input";
 import {Button} from "@nextui-org/button";
 import {Alert} from "@nextui-org/alert";
-import {AuthLoginType} from "@/utils/auth/type";
-import {login} from "@/utils/auth/auth";
+import {AuthLoginInterface} from "@/utils/types/auth/type";
+import {login} from "@/utils/auth/client/auth";
 import {useRouter} from "next/navigation";
 
 export function LoginForm(): ReactElement {
@@ -16,14 +16,15 @@ export function LoginForm(): ReactElement {
     const submit = (e: FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget as HTMLFormElement);
-        const data: AuthLoginType = {
+        const data: AuthLoginInterface = {
             email: formData.get('email')?.toString() ?? '',
             password: formData.get('password')?.toString() ?? '',
         }
 
         login(data).then((): void => {
             showMessage('Login success', 'success');
-            router.push('/', {})
+            router.push('/');
+            router.refresh();
         });
     }
 

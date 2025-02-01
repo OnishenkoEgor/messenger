@@ -1,3 +1,8 @@
-export interface ResponseInterface {
-    status: number
+export interface SuccessResponseInterface {
+    response: any
+}
+
+
+export interface ErrorResponseInterface {
+    message: string
 }

@@ -5,7 +5,7 @@ import {Input} from "@nextui-org/input";
 import {Button} from "@nextui-org/button";
 import {Alert} from "@nextui-org/alert";
 import {useRouter} from "next/navigation";
-import {AuthRegisterType} from "@/utils/auth/type";
+import {AuthRegisterInterface} from "@/utils/types/auth/type";
 import {register} from "@/utils/api/auth/auth";
 import {setCookie} from "cookies-next";
 
@@ -17,7 +17,7 @@ export function RegistrationForm(): ReactElement {
     const submit = (e: FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget as HTMLFormElement);
-        const data: AuthRegisterType = {
+        const data: AuthRegisterInterface = {
             email: formData.get('email')?.toString() ?? '',
             name: formData.get('name')?.toString() ?? '',
             password: formData.get('password')?.toString() ?? '',

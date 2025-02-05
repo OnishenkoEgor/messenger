@@ -4,8 +4,6 @@ namespace App\Controller\Auth;
 
 use App\Controller\Controller;
 use App\DTO\Auth\AuthRegisterRequestDTO;
-use App\DTO\Response\ResponseErrorDTO;
-use App\DTO\Response\ResponseSuccessDTO;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Transformer\User\UserInfoDTOFromEntityTransformer;
@@ -52,13 +50,13 @@ class AuthRegisterController extends Controller
 
             $token = $JWTManager->create($userEntity);
 
-            return $this->success(new ResponseSuccessDTO([
+            return $this->success([
                 'token' => $token,
-                'user' => UserInfoDTOFromEntityTransformer::transform($userEntity)->toArray(),
-                'exp' => $JWTManager->parse($token)['exp']
-            ]));
+                'expires' => $JWTManager->parse($token)['exp'],
+                'user' => UserInfoDTOFromEntityTransformer::transform($userEntity)->toArray()
+            ]);
         } catch (\Throwable $exception) {
-            return $this->error(new ResponseErrorDTO($exception->getMessage()));
+            return $this->error($exception->getMessage());
         }
     }
 }

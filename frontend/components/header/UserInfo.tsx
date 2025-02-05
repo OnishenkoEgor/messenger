@@ -2,15 +2,17 @@ import {ReactElement} from "react";
 import {Dropdown, DropdownTrigger, User} from "@nextui-org/react";
 import UserInfoMenu from "@/components/header/UserInfoMenu";
 import {getCurrentUser} from "@/utils/auth/server/auth";
+import {UserInterface} from "@/utils/types/user/type";
 
 const defaultUserData = {
     name: '',
     email: '',
-    image: 'https://www.shutterstock.com/image-vector/avatar-gender-neutral-silhouette-vector-600nw-2526512481.jpg'
-};
+    image: 'https://www.shutterstock.com/image-vector/avatar-gender-neutral-silhouette-vector-600nw-2526512481.jpg',
+    roles: []
+} satisfies UserInterface;
 
 export async function UserInfo(): Promise<ReactElement> {
-    const user = getCurrentUser() ?? defaultUserData;
+    const user: UserInterface = getCurrentUser() ?? defaultUserData;
 
     return (
         <Dropdown placement="bottom-start">

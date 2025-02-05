@@ -1,18 +1,14 @@
 'use client'
-import {FormEvent, ReactElement, useState} from "react";
+
+import {FormEvent, ReactElement} from "react";
 import {Form} from "@nextui-org/form";
 import {Input} from "@nextui-org/input";
 import {Button} from "@nextui-org/button";
-import {Alert} from "@nextui-org/alert";
 import {AuthLoginInterface} from "@/utils/types/auth/type";
 import {login} from "@/utils/auth/client/auth";
-import {useRouter} from "next/navigation";
+import {LoginFormProps} from "@/components/login/type";
 
-export function LoginForm(): ReactElement {
-    const [message, setMessage] = useState('');
-    const [type, setType] = useState('');
-    const router = useRouter();
-
+export function LoginForm({onSuccess, onError}: LoginFormProps): ReactElement {
     const submit = (e: FormEvent) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -22,21 +18,12 @@ export function LoginForm(): ReactElement {
         }
 
         login(data).then((): void => {
-            showMessage('Login success', 'success');
-            router.push('/');
-            router.refresh();
+            onSuccess();
+        }).catch(error => {
+            onError(error.message);
         });
     }
 
-    const showMessage = (message: string, type: 'danger' | 'success') => {
-        setType(type);
-        setMessage(message);
-
-        setTimeout(() => {
-            setType('');
-            setMessage('');
-        }, 2500)
-    }
     return (
         <Form className={'w-full grid grid-cols-1 gap-4 pt-4'} onSubmit={submit}>
             <Input
@@ -68,7 +55,6 @@ export function LoginForm(): ReactElement {
                     type="submit"
                     radius={'none'}
             >Отправить</Button>
-            <Alert title={message} color={type} isVisible={message && type} description={''}/>
         </Form>
 
     );

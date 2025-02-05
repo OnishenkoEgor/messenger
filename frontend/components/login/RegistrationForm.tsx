@@ -1,18 +1,14 @@
 'use client'
-import {FormEvent, ReactElement, useState} from "react";
+
+import {FormEvent, ReactElement} from "react";
 import {Form} from "@nextui-org/form";
 import {Input} from "@nextui-org/input";
 import {Button} from "@nextui-org/button";
-import {Alert} from "@nextui-org/alert";
-import {useRouter} from "next/navigation";
 import {AuthRegisterInterface} from "@/utils/types/auth/type";
-import {register} from "@/utils/api/auth/auth";
-import {setCookie} from "cookies-next";
+import {register} from "@/utils/auth/client/auth";
+import {LoginFormProps} from "@/components/login/type";
 
-export function RegistrationForm(): ReactElement {
-    const [message, setMessage] = useState('');
-    const [type, setType] = useState('');
-    const router = useRouter();
+export function RegistrationForm({onSuccess, onError}: LoginFormProps): ReactElement {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
@@ -23,26 +19,11 @@ export function RegistrationForm(): ReactElement {
             password: formData.get('password')?.toString() ?? '',
         };
 
-        register(data).then((token) => {
-            if (token) {
-                showMessage('Login success', 'success');
-                setCookie('auth_token', token);
-
-                setTimeout(() => {
-                    router.push('/')
-                }, 1250);
-            }
-        })
-    }
-
-    const showMessage = (message: string, type: 'danger' | 'success') => {
-        setType(type);
-        setMessage(message);
-
-        setTimeout(() => {
-            setType('');
-            setMessage('');
-        }, 2500)
+        register(data).then(() => {
+            onSuccess();
+        }).catch((error) => {
+            onError(error.message);
+        });
     }
 
     return (
@@ -95,7 +76,6 @@ export function RegistrationForm(): ReactElement {
                     type="submit"
                     radius={'none'}
             >Отправить</Button>
-            <Alert title={message} color={type} isVisible={message && type} description={''}/>
         </Form>
     );
 }

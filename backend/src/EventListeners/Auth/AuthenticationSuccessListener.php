@@ -27,14 +27,17 @@ readonly class AuthenticationSuccessListener
             return;
         }
 
-        $data['data']['user'] = UserInfoDTOFromEntityTransformer::transform($user)->toArray();
-
         $tokenData = $this->JWTManager->parse($data['token']);
         if (!$tokenData['exp'] ?? false) {
             return;
         }
 
-        $data['data']['exp'] = $tokenData['exp'];
-        $event->setData($data);
+        $event->setData([
+            'response' => [
+                'token' => $data['token'],
+                'expires' => $tokenData['exp'],
+                'user' => UserInfoDTOFromEntityTransformer::transform($user)->toArray()
+            ]
+        ]);
     }
 }

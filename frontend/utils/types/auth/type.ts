@@ -1,3 +1,5 @@
+import {UserInterface} from "@/utils/types/user/type";
+
 export interface AuthLoginInterface {
     email: string,
     password: string,
@@ -5,6 +7,12 @@ export interface AuthLoginInterface {
 
 export interface AuthRegisterInterface extends AuthLoginInterface {
     name: string
+}
+
+export interface AuthResponseInterface {
+    token: string,
+    expires: number,
+    user: UserInterface
 }
 
 export const AUTH_TOKEN_COOKIE: string = 'auth_token';
